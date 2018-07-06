@@ -1,0 +1,85 @@
+---
+title: "Pradeep Sahoo Home Work 1"
+author: "Sahoo Pradeep"
+date: "6/12/2018"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+My Github repository for my assignments can be found at this URL: [My Github ](https://github.com/Pradeep-Sahoo/R-Assignments/tree/master/R_Project1)
+
+
+```{r load packages,warning=FALSE, message=FALSE}
+library(mdsr)
+library(tidyverse)
+```
+
+```{r}
+data(WorldCities)
+```
+
+##**QUESTION 1: How many observations and variables are there in this data set? What are some of the variable names? Type up your answer in your document using complete sentences.**
+
+```{r}
+glimpse(WorldCities)
+```
+```{r select 200 rows}
+WorldCities <- head(WorldCities, 200) # 200 rows
+```
+
+```{r selecting countries}
+country_col <- WorldCities$country
+unique(country_col)
+```
+
+##**QUESTION 2: There is a column called region in the data set. Can you extract this and show only the unique values?**
+
+```{r}
+country_col <- select(WorldCities, country)
+country_col <- WorldCities %>% select(country)
+```
+
+```{r}
+WorldCities %>% select(region) %>% head(5)
+```
+
+##**QUESTION 3: Can you extract and show the unique entries from the country column in WorldCities using one line of code and two %>% operators?**
+
+```{r}
+WorldCities %>% select(country) %>% unique() 
+```
+
+###Visualize it
+
+```{r}
+WorldCities %>% ggplot(aes(x = population)) + 
+  geom_histogram()
+```
+
+```{r}
+WorldCities %>% ggplot(aes(x = population)) + 
+  geom_histogram() + 
+  xlab('City Population')
+```
+
+##**QUESTION 4: Make one more histogram of the population and add a new x-label, a new y-label, a new title (use ggtitle('my title')), and change the theme of the plot using theme_bw().**
+
+```{r}
+WorldCities %>% ggplot(aes(x = population)) + 
+  geom_histogram() + 
+  xlab('City Population') + 
+  ylab('Count') +
+  ggtitle('World Population') +
+  theme_bw()
+```
+
+
+
+
+
