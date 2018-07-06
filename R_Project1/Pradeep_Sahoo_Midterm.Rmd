@@ -3,8 +3,8 @@ title: "Pradeep Sahoo Midterm"
 author: "Pradeep Sahoo"
 date: "7/5/2018"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -17,6 +17,36 @@ My Github repository for my assignments can be found at this URL: [My Github ](h
 ```{r load packages,warning=FALSE, message=FALSE}
 library(mdsr)
 library(tidyverse)
+library(tibble)
+```
+#The tidyverse packages
+1. Can you name which package is associated with each task below?
+  a. Plotting - ggplot2
+  b. Data munging/wrangling - dplyr
+  c. Reshaping (speading and gathering) data - tidyr
+  d. Importing/exporting data - readr
+2. Now can you name two functions that you’ve used from each package that you listed above for these tasks?
+ a. Plotting - ggplot(), geom_boxplot()
+ b. Data munging/wrangling - summarize(), filter()
+ c. Reshaping data - gather(), spread(), separate(), unite()
+ d. Importing/exporting data - read_csv(), read_tsv(), read_delim()
+ 
+```{r}
+My_data.name___is.too00ooLong <- c( 1 , 2   , 3 )
+My_data.name___is.too00ooLong
+my_string <- c('has','an','error','in','it')
+my_string
+my_vector <- c(1, 2, '3', '4', 5)
+my_vector
+```
+my_vector is converted to string. 
+```{r}
+file_path = ('/Users/pradeepsahoo/Downloads/rail_trail.txt')
+text_data <- read.delim(file_path,header = TRUE, sep = "|")
+glimpse(text_data)
+write.csv(text_data,file = '/Users/pradeepsahoo/R-Assignments/R_Project1/rail_trail.csv')
+csv_data <- read.csv( '/Users/pradeepsahoo/R-Assignments/R_Project1/rail_trail.csv')
+glimpse(csv_data)
 ```
 
 ```{r}
