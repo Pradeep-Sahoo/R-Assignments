@@ -1,0 +1,112 @@
+---
+title: "Home Work Assignment 4"
+author: "Pradeep Sahoo"
+date: "7/1/2018"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE)
+```
+My Github repository for my assignments can be found at this URL: [My Github ](https://github.com/Pradeep-Sahoo/R-Assignments/tree/master/R_Project1)
+
+```{r load packages,warning=FALSE, message=FALSE}
+library(mdsr)
+library(tidyverse)
+library(nycflights13)
+```
+
+```{r}
+not_cancelled <- flights %>%
+  filter(!is.na(dep_delay), !is.na(arr_delay))
+```
+
+2.Come up with another approach that will give you the same output as
+
+```{r}
+not_cancelled %>% 
+  count(dest)
+
+```
+
+count function counts  the data set by a the specified variable. The same result can be achieved if we group by the data set by the same variable. Then using length() function counts the observation in each group
+
+```{r}
+not_cancelled %>% 
+  group_by(dest) %>%
+  summarise(n = length(dest))
+```
+
+```{r}
+not_cancelled %>% 
+  count(tailnum, wt = distance)
+```
+
+```{r}
+not_cancelled %>% 
+  group_by(tailnum) %>%
+  summarise(n = sum(distance))
+```
+
+3. Our definition of cancelled flights (
+{ Snip }
+is.na(dep_delay) | is.na(arr_delay) ) is slightly suboptimal. Why? Which is the most important column?
+
+I think arr_delay is important. Because if the flight may go land in a different airport other than the Destination Airport. In that case the arr_delay would be NULL. So to know the about the Cancelled Flight both Dep_delay and Arr_delay has to be NULL
+
+4. Look at the number of cancelled flights per day. Is there a pattern? Is the proportion of cancelled flights related to the average delay?
+
+Need tto check with robert
+
+```{r}
+#canceled_delayed <- 
+ # flights%>%
+#group_by(flights, year, month, day)
+
+```
+
+
+```{r}
+  flights%>%
+  group_by(carrier)%>%
+  summarise(arr_delay = mean(arr_delay, na.rm = TRUE)) %>%
+  arrange(desc(arr_delay))
+```
+```{r}
+flights%>%
+  count(carrier)%>%
+  arrange((carrier))
+```
+```{r}
+as_tibble(flights)
+```
+
+```{r}
+mtcars
+```
+
+```{r}
+class(mtcars)
+
+```
+
+```{r}
+df <- data.frame(abc = 1, xyz = "a")
+df$abc
+df$xyz
+df[, "xyz"]
+df[, c("abc", "xyz")]
+```
+If you have the name of a variable stored in an object, e.g. var <- "mpg", how can you extract the reference variable from a tibble?
+
+```{r}
+my_data<-read.delim("/Users/pradeepsahoo/Downloads/baby_names.txt")
+glimpse(my_data)
+write.csv(my_data, file = "/Users/pradeepsahoo/Downloads/baby_names.csv")
+my_csv <- read_csv("/Users/pradeepsahoo/Downloads/baby_names.csv")
+glimpse(my_csv)
+```
+
