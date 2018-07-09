@@ -11,55 +11,49 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = TRUE)
 ```
-My Github repository for my assignments can be found at this URL: [My Github ](https://github.com/Pradeep-Sahoo/R-Assignments/tree/master/R_Project1)
+My Github repository for my assignments can be found at this URL: [My Github] (https://github.com/Pradeep-Sahoo/R-Assignments/tree/master/R_Project1)
 
 ```{r load packages,warning=FALSE, message=FALSE}
 library(mdsr)
 library(tidyverse)
 library(nycflights13)
+library(tibble)
 ```
+#Section 5.6.7: #2, #4 and #6 only. Extra Credit: Do #5
 
+#2.
 ```{r}
 not_cancelled <- flights %>%
   filter(!is.na(dep_delay), !is.na(arr_delay))
+  
+not_cancelled %>% group_by(dest) %>% summarize(count_dest = n())
 ```
-
-2.Come up with another approach that will give you the same output as
-
-```{r}
-not_cancelled %>% 
-  count(dest)
-
-```
-
+Come up with another approach that will give you the same output as
 count function counts  the data set by a the specified variable. The same result can be achieved if we group by the data set by the same variable. Then using length() function counts the observation in each group
 
 ```{r}
+#equivalent of not_cancelled %>%   count(dest)
 not_cancelled %>% 
   group_by(dest) %>%
   summarise(n = length(dest))
 ```
 
 ```{r}
+#not_cancelled %>% count(tailnum, wt = distance)
 not_cancelled %>% 
-  count(tailnum, wt = distance)
+ group_by(tailnum)%>%summarise(dist <- sum(distance))
 ```
 
-```{r}
-not_cancelled %>% 
-  group_by(tailnum) %>%
-  summarise(n = sum(distance))
-```
-
-3. Our definition of cancelled flights (
-{ Snip }
+#3. 
+Our definition of cancelled flights (
 is.na(dep_delay) | is.na(arr_delay) ) is slightly suboptimal. Why? Which is the most important column?
 
 I think arr_delay is important. Because if the flight may go land in a different airport other than the Destination Airport. In that case the arr_delay would be NULL. So to know the about the Cancelled Flight both Dep_delay and Arr_delay has to be NULL
 
-4. Look at the number of cancelled flights per day. Is there a pattern? Is the proportion of cancelled flights related to the average delay?
+#4. 
+Look at the number of cancelled flights per day. Is there a pattern? Is the proportion of cancelled flights related to the average delay?
 
-Need tto check with robert
+Need to check with Robert.
 
 ```{r}
 #canceled_delayed <- 
@@ -68,45 +62,132 @@ Need tto check with robert
 
 ```
 
+#Section 10.5: #1, #2, #3 and #6 only
 
-```{r}
-  flights%>%
-  group_by(carrier)%>%
-  summarise(arr_delay = mean(arr_delay, na.rm = TRUE)) %>%
-  arrange(desc(arr_delay))
-```
-```{r}
-flights%>%
-  count(carrier)%>%
-  arrange((carrier))
-```
-```{r}
-as_tibble(flights)
-```
-
-```{r}
-mtcars
-```
-
+#1
+Class function can be used to tell whether an object is a Tibble. For Ex: 
 ```{r}
 class(mtcars)
-
 ```
+
+#2
+In the below example in a Data Frame  we need not specify the whole name of the column to subset. We have just specified the x from xyz and it gives the value by $. This is sometime errorneous. If we have 2 column with similar names. In that case the result may be erroneous. 
+
+Also subsetting a single column with [,"column name"] returns a tibble from a tibble. where as a dataframe returns a vector. Following example suggests that. 
 
 ```{r}
 df <- data.frame(abc = 1, xyz = "a")
-df$abc
-df$xyz
-df[, "xyz"]
-df[, c("abc", "xyz")]
+df$x
 ```
-If you have the name of a variable stored in an object, e.g. var <- "mpg", how can you extract the reference variable from a tibble?
+```{r}
+df1 <- data.frame(abc = 1, ab = 2, cde = 3)
+df1$a
+```
 
 ```{r}
-my_data<-read.delim("/Users/pradeepsahoo/Downloads/baby_names.txt")
+df[, "xyz"]
+```
+
+```{r}
+df[, c("abc", "xyz")]
+```
+```{r}
+tb <- as_tibble(df)
+tb$x
+```
+```{r}
+tb[,"xyz"]
+```
+```{r}
+#using $ in a Tibble returns the vector
+tb$abc
+```
+```{r}
+tb$xyz
+```
+
+```{r}
+tb[,c("abc","xyz")]
+```
+#3
+If you have the name of a variable stored in an object, e.g. var <- "mpg", how can you extract the reference variable from a tibble?
+
+We can extract the reference of the Variable by using [[]]
+Here Name of the variable is "mpg" which is stored in obj called var. We need to find the values of mpg. 
+
+```{r}
+var <- "mpg"
+mtcars[[var]]
+```
+
+#6
+What option controls how many additional column names are printed at the footer of a tibble?
+Need to check.
+
+#Section 12.3.3: #2, #3 and #4 only
+#2
+```{r}
+table4a
+```
+```{r}
+#table4a %>% 
+  #gather(1999, 2000, key = "year", value = "cases")
+```
+This is becaue the Variable 1999 and 2000 are starting with numbers, so we need to enclose them in `(tick marks).
+
+```{r}
+table4a %>% 
+  gather(`1999`, `2000`, key = "year", value = "cases")
+```
+#3
+Why does spreading this tibble fail? How could you add a new column to fix the problem?
+```{r}
+people <- tribble(
+  ~name,             ~key,    ~value,
+  #-----------------|--------|------
+  "Phillip Woods",   "age",       45,
+  "Phillip Woods",   "height",   186,
+  "Phillip Woods",   "age",       50,
+  "Jessica Cordero", "age",       37,
+  "Jessica Cordero", "height",   156
+)
+people
+```
+This suggest that duplicate values are present. Same combination of Name and Key are appearing multiple times. Like Phillip Woods, age is coming muliple times. So the error, need to add one more variable like Year to break the duplicacy. 
+```{r}
+people <- tribble(
+  ~name,            ~Year,     ~key,    ~value,
+  #-----------------|--------|--------|------
+  "Phillip Woods",   2010, "age",       45,
+  "Phillip Woods",   2010, "height",   186,
+  "Phillip Woods",   2015, "age",       50,
+  "Jessica Cordero", 2010, "age",       37,
+  "Jessica Cordero", 2010, "height",   156
+)
+people
+spread(people,key = key, value = value)
+```
+
+```{r}
+preg <- tribble(
+  ~pregnant, ~male, ~female,
+  "yes",     NA,    10,
+  "no",      20,    12
+)
+preg %>% gather(male, female, key = gender, value = who_knows)
+```
+
+
+#Section 12.4.3: #1 and #2 only
+
+
+#2
+```{r}
+file_path = '/Users/pradeepsahoo/Downloads/baby_names.txt'
+my_data <- read.delim(file_path,header = TRUE,sep  = '|')
 glimpse(my_data)
-write.csv(my_data, file = "/Users/pradeepsahoo/Downloads/baby_names.csv")
-my_csv <- read_csv("/Users/pradeepsahoo/Downloads/baby_names.csv")
-glimpse(my_csv)
+write.csv(my_data,file = '/Users/pradeepsahoo/Downloads/baby_names.csv')
+csv_data <- read.csv( '/Users/pradeepsahoo/Downloads/baby_names.csv')
+glimpse(csv_data)
 ```
 
