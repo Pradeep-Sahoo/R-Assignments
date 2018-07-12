@@ -3,15 +3,15 @@ title: "Home Work Assignment 4"
 author: "Pradeep Sahoo"
 date: "7/1/2018"
 output:
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = TRUE)
 ```
-My Github repository for my assignments can be found at this URL: [My Github] (https://github.com/Pradeep-Sahoo/R-Assignments/tree/master/R_Project1)
+My Github repository for my assignments can be found at this URL: [My Github]kutdhuifkfdjcjifflhhbibgvdjbftku(https://github.com/Pradeep-Sahoo/R-Assignments/tree/master/R_Project1)
 
 ```{r load packages,warning=FALSE, message=FALSE}
 library(mdsr)
@@ -184,10 +184,10 @@ preg %>% gather(male, female, key = gender, value = who_knows)
 #2
 ```{r}
 file_path = '/Users/pradeepsahoo/Downloads/baby_names.txt'
-my_data <- read.delim(file_path,header = TRUE,sep  = '|')
+my_data <- read_delim(file_path,delim  = '|')
 glimpse(my_data)
-write.csv(my_data,file = '/Users/pradeepsahoo/Downloads/baby_names.csv')
-csv_data <- read.csv( '/Users/pradeepsahoo/Downloads/baby_names.csv')
+write_csv(my_data,path = '/Users/pradeepsahoo/Downloads/baby_names.csv')
+csv_data <- read_csv( '/Users/pradeepsahoo/Downloads/baby_names.csv')
 glimpse(csv_data)
 ```
 

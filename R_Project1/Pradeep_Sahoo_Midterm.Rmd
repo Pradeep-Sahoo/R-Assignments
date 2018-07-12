@@ -11,7 +11,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-My Github repository for my assignments can be found at this URL: [My Github ](https://github.com/Pradeep-Sahoo/R-Assignments/tree/master/R_Project1)
+My Github repository for my assignments can be found at this URL: [My Github](https://github.com/Pradeep-Sahoo/R-Assignments/tree/master/R_Project1)
 
 
 ```{r load packages,warning=FALSE, message=FALSE}
@@ -30,7 +30,8 @@ library(tibble)
  b. Data munging/wrangling - summarize(), filter()
  c. Reshaping data - gather(), spread(), separate(), unite()
  d. Importing/exporting data - read_csv(), read_tsv(), read_delim()
- 
+
+#R Basics 
 ```{r}
 My_data.name___is.too00ooLong <- c( 1 , 2   , 3 )
 My_data.name___is.too00ooLong
@@ -40,16 +41,97 @@ my_vector <- c(1, 2, '3', '4', 5)
 my_vector
 ```
 my_vector is converted to string. 
+
+#Data import/export
 ```{r}
 file_path = ('/Users/pradeepsahoo/Downloads/rail_trail.txt')
-text_data <- read.delim(file_path,header = TRUE, sep = "|")
+text_data <- read_delim(file_path, delim = "|")
 glimpse(text_data)
-write.csv(text_data,file = '/Users/pradeepsahoo/R-Assignments/R_Project1/rail_trail.csv')
-csv_data <- read.csv( '/Users/pradeepsahoo/R-Assignments/R_Project1/rail_trail.csv')
+write_csv(text_data,path = '/Users/pradeepsahoo/R-Assignments/R_Project1/rail_trail.csv')
+csv_data <- read_csv( '/Users/pradeepsahoo/R-Assignments/R_Project1/rail_trail.csv')
 glimpse(csv_data)
 ```
+#Visualization
+Mrs. President: 
+ - There is no %age symbol so it is difficult to under what the number suggest. 
+ - Then the sum is not summing up to 100 in one variable/bucket. 
+ - There is no signinificance of the color and it is creating confusion. 
 
 ```{r}
+ggplot(data = diamonds) +
+  geom_boxplot(mapping = aes(x= cut, y = carat)) + coord_flip()
+```
+```{r}
+ggplot(data = diamonds) +
+  geom_boxplot(mapping = aes(x = cut,y = carat, fill = color, position = "dodge") ) + ggtitle ("Diamond Dataset") + xlab( "CUT OF DIAMOND") + ylab("CARAT OF DIAMOND") + coord_flip()
+```
+
+
+```{r}
+ggplot(data = diamonds) +
+  geom_boxplot(mapping = aes(x = cut,y = carat, fill = color)) + ggtitle ("Diamond Dataset") + xlab( "CUT OF DIAMOND") + ylab("CARAT OF DIAMOND") + coord_flip()
+```
+
+#Data munging and wrangling
+```{r}
+glimpse(table2)
+```
+```{r}
+diamonds1 <- diamonds%>% mutate(price_per_carat = price / carat)
+glimpse(diamonds1$price_per_carat)
+```
+```{r}
+  by_cut  <- filter(group_by(diamonds,cut), carat < 1.5 & price >10000)
+    summarise(by_cut,
+              count = n())
+
+```
+• Do the results make sense? Why?
+  The result make sense as more ideal cut diamonds are more expensive though they have less carats. 
+• Do we need to be wary of any of these numbers? Why?
+
+#EDA
+1. During what time period is this data from?
+
+```{r}
+library(ggplot2)
+data("txhousing")
+glimpse(txhousing)
+min(txhousing$year)
+max(txhousing[,2])
+
+```
+The data is from 2000 to 2015
+2. How many cities are represented?
+```{r}
+
+count(unique(txhousing[c("city")]))
 
 ```
 
+3. Which city, month and year had the highest number of sales?
+```{r}
+tx_sales <- group_by(txhousing,city,year,month)
+max(tx_sales$sales, na.rm = TRUE)
+        #summarise(tx_sales,max = max(sales))
+ 
+```
+
+4. What kind of relationship do you think exists between the number of listings and the number of sales?
+Check your assumption and show your work.
+
+ Listing is always greater than Sales. 
+
+5. What proportion of sales is missing for each city?
+```{r}
+tx_sales_city <- group_by(txhousing,city)
+tx_sales_city_notna <- filter(tx_sales_city,  sales =='NA')
+          summarise(tx_sales_city,count=n())
+    summarise(tx_sales_city_notna,count=n())
+```
+
+6. Looking at only the cities and months with greater than 500 sales:
+• Are the distributions of the median sales price (column name median), when grouped by city, different? The same? Show your work.
+ 
+• Any cities that stand out that you’d want to investigate further?
+• Why might we want to filter out all cities and months with sales less than 500?
