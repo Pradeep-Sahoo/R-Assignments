@@ -1,0 +1,153 @@
+---
+title: "Home Work Assignment 6"
+author: "Pradeep Sahoo"
+date: "7/14/2018"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+My Github repository for my assignments can be found at this URL: [My Github ](https://github.com/Pradeep-Sahoo/R-Assignments/tree/master/R_Project1)
+
+```{r load packages,warning=FALSE, message=FALSE}
+library(tidyverse)
+library(mosaicData)
+```
+
+#Exercise 1
+```{r}
+data(Whickham)
+glimpse(Whickham)
+```
+What variables are in this data set?
+There are 3 variables. 
+Outcome, Smoker, Age.
+
+How many observations are there and what does each represent?
+There are 1,314 observations. 
+Each represents that the person is alive or dead, the person is a smoker or non-smoker and the age of the person
+
+Create a table (use the R code below as a guide) and a visualization of the relationship between smoking status and outcome, ignoring age. What do you see? Does it make sense?
+
+```{r}
+Whickham %>% count( outcome , smoker  )
+Whickham_mod <- Whickham %>%as_tibble() %>% group_by(outcome , smoker, age) %>% mutate(count = n())
+```
+```{r}
+Whickham_mod %>% ggplot() + geom_point(aes(x = age, y = count, fill = smoker, color = outcome))
+```
+
+
+```{r}
+age_cat <- case_when(Whickham$age <= 44 ~ 'Young', 
+                     Whickham$age > 44 & Whickham$age <= 64 ~ 'Mid', 
+                     Whickham$age > 64 ~ 'Old')
+class(age_cat)
+age_fct <- factor(age_cat,ordered = TRUE)
+levels(age_fct)
+age_fct_releveled <- fct_relevel(age_fct, 'Young','Mid','Old' )
+levels(age_fct_releveled)
+
+```
+
+```{r}
+
+Whickham_mod %>% ggplot() + geom_point(mapping = aes(x = age_fct_releveled, y = count, color = outcome)) 
+```
+
+#Exercise 2
+1. Generate a random sample of size n = 10000 from a gamma(1,2) distribution and plot a histogram or
+density curve. Use the code below to help you get your sample.
+```{r}
+n <- 10000
+gamma_samp <- tibble(x = rgamma(n, shape = 1, scale = 2))
+```
+
+2. What is the mean and standard deviation of your sample? They should both be close to 2 because for
+a gamma distribution:
+```{r}
+gamma_samp%>%
+summarise(mean = mean(x),sd = sd(x))
+```
+3. Pretend the distribution of our population of data looks like the plot above. Now take a sample of
+size n = 30 from a Gamma(1,2) distribution, plot the histogram or density curve, and calculate the
+mean and standard deviation.
+
+```{r}
+n <- 30
+gamma_samp <- (rgamma(n, shape = 1, scale = 2)) 
+m_samp <- mean(gamma_samp)
+m_samp
+sd_samp <- sd(gamma_samp)
+sd_samp
+gamma_samp <- (x <- rgamma(n, shape = 1, scale = 2)) 
+#gamma_samp %>% ggplot() + geom_histogram(aes(x = x))
+```
+
+
+4. Take a sample of size n = 30, again from the Gamma(1,2) distribution, calculate the mean, and assign
+it to a vector named mean_samp. Repeat this 10000 times!!!! The code below might help.
+```{r}
+# create a vector with 10000 NAs
+mean_samp <- rep(NA, 10000)
+# start a loop
+for(i in 1:10000) {
+g_samp <- rgamma(30, shape = 1, scale = 2)
+mean_samp[i] <- mean(g_samp)
+}
+# Convert vector to a tibble
+#mean_samp <- tibble(mean_samp)
+```
+5. Make a histogram of your collection of means from above (mean_samp).
+
+```{r}
+# Need to check with Robert
+#g_samp %>% ggplot() + geom_histogram(aes(x = mean_samp))
+```
+
+6. Calculate the mean and standard deviation of all of your sample means
+
+```{r}
+mean_of_mean_samp <- mean(mean_samp)
+mean_of_mean_samp
+sd_of_mean_samp <- sd(mean_samp)
+sd_of_mean_samp
+```
+7. Did anything surprise you about your answers to #6?
+result is very close to .365
+8. According to the Central Limit Theorem, the mean of your sampling distribution should be very close
+to 2, and the standard deviation of your sampling distribution should be close to  0.365.
+Repeat #4-#6, but now with a sample of size n = 300 instead. Do your results match up well with the
+theorem?
+```{r}
+# create a vector with 10000 NAs
+mean_samp <- rep(NA, 10000)
+# start a loop
+for(i in 1:10000) {
+g_samp <- rgamma(300, shape = 1, scale = 2)
+mean_samp[i] <- mean(g_samp)
+}
+# Convert vector to a tibble
+#mean_samp <- tibble(mean_samp)
+```
+5. Make a histogram of your collection of means from above (mean_samp).
+
+```{r}
+# Need to check with Robert
+#g_samp %>% ggplot() + geom_histogram(aes(x = mean_samp))
+```
+
+6. Calculate the mean and standard deviation of all of your sample means
+
+```{r}
+mean_of_mean_samp <- mean(mean_samp)
+mean_of_mean_samp
+sd_of_mean_samp <- sd(mean_samp)
+sd_of_mean_samp
+```
+
+standard deviation of your sampling distribution should be close to should be very close to 0.1154700538. My result is also matching to the expected result. 
